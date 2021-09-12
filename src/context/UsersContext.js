@@ -1,32 +1,7 @@
 import React, { useState } from 'react';
 
 const defaultUsersContextState = {
-  users: {
-    333333: {
-      id: 333333,
-      firstName: 'Semen',
-      lastName: 'Semenov',
-      position: 'trainee',
-    },
-    222222: {
-      id: 222222,
-      firstName: 'Petro',
-      lastName: 'Petrov',
-      position: 'worker on zavod',
-    },
-    444444: {
-      id: 444444,
-      firstName: 'Kiril',
-      lastName: 'Kirilov',
-      position: 'designer',
-    },
-    111111: {
-      id: 111111,
-      firstName: 'Ivan',
-      lastName: 'Ivanov',
-      position: 'worker',
-    },
-   },
+  users: {},
 };
 
 export const defaultUsersContext = {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import './App.css';
@@ -16,6 +17,14 @@ import { AdminsProvider } from './context/AdminsContext';
 
 const App = () => {
   
+  // for controll working of server
+  React.useEffect(() => {
+    fetch('https://users-list-server.herokuapp.com/users')
+    .then(response => response.json())
+    .then(console.log)
+    .catch(console.log);
+  });
+
   return (
     <AdminsProvider>
       <UsersProvider>

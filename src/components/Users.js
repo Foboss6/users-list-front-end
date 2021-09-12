@@ -70,12 +70,14 @@ const Users = (props) => {
         obj[key] = 'default';
   }
 
-  const {users, deleteUser} = useUsersActions();
+  const {users, deleteUser, addNewUser} = useUsersActions();
+  // const [users, setUsers] = useState();
 
   const [sortingBy, setSortingBy] = useState(sortByFirstNameUp);
 
   const [arrayUsers, setArrayUsers] = useState(Object.values(users));
 
+  // function for sorting array
   const sortingArray = (array, direction, fieldName) => {
     array.sort((a, b) => {
       if(direction === 'up') {
@@ -97,19 +99,19 @@ const Users = (props) => {
     switch(sortingBy) {
       case sortByFirstNameUp : 
         sortButtonColor.sortByFirstNameUp='primary';
-        return sortingArray(arrayUsers, 'up', 'firstName');
+        return sortingArray(arrayUsers, 'up', 'firstname');
 
       case sortByFirstNameDown :
         sortButtonColor.sortByFirstNameDown='primary';
-        return sortingArray(arrayUsers, 'down', 'firstName');
+        return sortingArray(arrayUsers, 'down', 'firstname');
 
       case sortByLastNameUp :
         sortButtonColor.sortByLastNameUp='primary';
-        return sortingArray(arrayUsers, 'up', 'lastName');
+        return sortingArray(arrayUsers, 'up', 'lastname');
 
       case sortByLastNameDown :
         sortButtonColor.sortByLastNameDown='primary';
-        return sortingArray(arrayUsers, 'down', 'lastName');
+        return sortingArray(arrayUsers, 'down', 'lastname');
 
         case sortByPositionUp :
           sortButtonColor.sortByPositionUp='primary';
@@ -124,7 +126,7 @@ const Users = (props) => {
   }, [sortingBy, arrayUsers]);
 
   const handleDeleteButtonClick = (event) => {
-    deleteUser(event.currentTarget.value);
+    // deleteUser(event.currentTarget.value);
   }
 
   const handleEditButtonClick = (event) => {
@@ -138,12 +140,24 @@ const Users = (props) => {
   React.useEffect(()=>{
     if(users.search) {
       setArrayUsers(Object.values(users).filter(user => (
-        user.firstName 
-          ? user.firstName.toLowerCase().includes(users.search.name.toLowerCase()) || 
-            user.lastName.toLowerCase().includes(users.search.name.toLowerCase())
+        user.firstname 
+          ? user.firstname.toLowerCase().includes(users.search.name.toLowerCase()) || 
+            user.lastname.toLowerCase().includes(users.search.name.toLowerCase())
           : false)));
     } else setArrayUsers(Object.values(users));
+    console.log(users);
   }, [users]);
+
+  React.useEffect(() => {
+    fetch('https://users-list-server.herokuapp.com/users')
+    .then(res => res.json())
+    .then(data => {
+      data.forEach((el) => {
+        addNewUser(el);
+      });
+    })
+    .catch(console.log);
+  }, []);
 
   return (
     <>
@@ -226,8 +240,8 @@ const Users = (props) => {
         <TableBody>
           {sortedUsers.map((user) => (
             <TableRow key={user.id}>
-              <TableCell className={classes.body} align="center">{user.firstName}</TableCell>
-              <TableCell className={classes.body} align="center">{user.lastName}</TableCell>
+              <TableCell className={classes.body} align="center">{user.firstname}</TableCell>
+              <TableCell className={classes.body} align="center">{user.lastname}</TableCell>
               <TableCell className={classes.body} align="center">{user.position}</TableCell>
               <TableCell align="right">
                 <IconButton aria-label="edit" value={user.id} onClick={handleEditButtonClick}>

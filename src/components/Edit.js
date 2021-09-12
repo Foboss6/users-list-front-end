@@ -39,20 +39,20 @@ const Edit = () => {
   
   return(
     <div>
-      <h3>Edit {user.firstName}'s data</h3>
+      <h3>Edit {user.firstname}'s data</h3>
       <TextField
-          id="outlined-helperText-firstName"
+          id="outlined-helperText-firstname"
           label="First Name"
-          defaultValue={user.firstName}
+          defaultValue={user.firstname}
           variant="outlined"
-          onChange={(ev) => onInputChange(ev, 'firstName')}
+          onChange={(ev) => onInputChange(ev, 'firstname')}
         />
         <TextField
-          id="outlined-helperText-lastName"
+          id="outlined-helperText-lastname"
           label="Larst Name"
-          defaultValue={user.lastName}
+          defaultValue={user.lastname}
           variant="outlined"
-          onChange={(ev) => onInputChange(ev, 'lastName')}
+          onChange={(ev) => onInputChange(ev, 'lastname')}
         />
         <TextField
           id="outlined-helperText-position"

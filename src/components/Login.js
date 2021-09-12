@@ -140,8 +140,8 @@ const Login = () => {
   // ******** For REGISTER tab ***********************************
   const { addNewUser } = useUsersActions();
   const [user, setUser] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     position: ''
   });
 
@@ -204,8 +204,8 @@ const Login = () => {
         } else {
           if(checkState) {
             // save user's data to it's oun context to display it in the users list
-            if(user.firstName) {
-              if(user.lastName) {
+            if(user.firstname) {
+              if(user.lastname) {
                 if(user.position) {
                   setHelperText((prevState) => ({
                     ...prevState,
@@ -425,7 +425,7 @@ const Login = () => {
                     label="First Name"
                     variant="outlined"
                     margin='normal'
-                    onChange={(ev)=> onUserInputChange(ev, 'firstName')}
+                    onChange={(ev)=> onUserInputChange(ev, 'firstname')}
                   />
                 <TextField
                     id="outlined-required-last-name"
@@ -434,7 +434,7 @@ const Login = () => {
                     margin='normal'
                     error={!!helperText.helperTextLastName}
                     helperText={helperText.helperTextLastName}
-                    onChange={(ev)=> onUserInputChange(ev, 'lastName')}
+                    onChange={(ev)=> onUserInputChange(ev, 'lastname')}
                   />
                   <TextField
                     id="outlined-required-position"

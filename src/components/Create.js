@@ -11,8 +11,8 @@ export default function Create() {
   const history = useHistory();
   
   const [user, setUser] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     position: ''
   });
 
@@ -38,7 +38,7 @@ export default function Create() {
   }
 
   const handleButtonClick = () => {
-    if(user && user.firstName && user.lastName && user.position) {
+    if(user && user.firstname && user.lastname && user.position) {
       addNewUser({
         id: Date.now(),
         ...user,
@@ -56,8 +56,8 @@ export default function Create() {
     <div>
       <h3>Add new user</h3>
       <div>
-        <InputForm label='First name' inputRef={(ev) => initialInputs(ev, 0)} onTextChange={(ev) => onInputChange(ev, 'firstName')} />
-        <InputForm label='Last name' inputRef={(ev) => initialInputs(ev, 1)} onTextChange={(ev) => onInputChange(ev, 'lastName')} />
+        <InputForm label='First name' inputRef={(ev) => initialInputs(ev, 0)} onTextChange={(ev) => onInputChange(ev, 'firstname')} />
+        <InputForm label='Last name' inputRef={(ev) => initialInputs(ev, 1)} onTextChange={(ev) => onInputChange(ev, 'lastname')} />
         <InputForm label='Position' inputRef={(ev) => initialInputs(ev, 2)} onTextChange={(ev) => onInputChange(ev, 'position')} />
       </div>
         {!isDataValid ? <p>Enter valid User's Data</p> : <></>}
