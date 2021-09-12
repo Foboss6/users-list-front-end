@@ -1,0 +1,1 @@
+export const SERVER_PATH = 'https://users-list-server.herokuapp.com';

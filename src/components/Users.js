@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { SERVER_PATH } from '../variables/variables';
+import useLocalContextActions from '../hooks/useLocalContextActions';
+
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -15,10 +18,6 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import useLocalContextActions from '../hooks/useLocalContextActions';
-
-// import useUsersActions from '../hooks/useLocalContextActions';
-
 
 const styles = theme => ({
   root: {
@@ -79,6 +78,24 @@ const Users = (props) => {
 
   const [arrayUsers, setArrayUsers] = useState(Object.values(users));
 
+  // function for loading users from database
+  const loadUsers = () => {
+    setUsers({});
+    fetch(`${SERVER_PATH}/users`)
+    .then(res => res.json())
+    .then(data => {
+      data.forEach((el) => {
+        setUsers((prevState) => {
+          return {
+            ...prevState,
+            [el.id]: el,
+          }
+        })
+      });
+    })
+    .catch(console.log);
+  }
+
   // function for sorting array
   const sortingArray = (array, direction, fieldName) => {
     array.sort((a, b) => {
@@ -129,6 +146,18 @@ const Users = (props) => {
 
   const handleDeleteButtonClick = (event) => {
     // deleteUser(event.currentTarget.value);
+    console.log(event.currentTarget.value);
+    fetch(`${SERVER_PATH}/users/delete`, {
+      method: 'delete',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({id: event.currentTarget.value})
+    })
+    .then((res) => res.json())
+    .then(data => {
+      if(data === 'success') return loadUsers();
+      else console.log(data);
+    })
+    .catch(console.log);
   }
 
   const handleEditButtonClick = (event) => {
@@ -148,7 +177,7 @@ const Users = (props) => {
           : false)));
     } else setArrayUsers(Object.values(users));
     console.log(items);
-  }, [items, users]);
+  }, [items.search, users]);
 
   // React.useEffect(() => {
   //   fetch('https://users-list-server.herokuapp.com/users')
@@ -162,19 +191,7 @@ const Users = (props) => {
   // }, []);
 
   React.useEffect(() => {
-    fetch('https://users-list-server.herokuapp.com/users')
-    .then(res => res.json())
-    .then(data => {
-      data.forEach((el) => {
-        setUsers((prevState) => {
-          return {
-            ...prevState,
-            [el.id]: el,
-          }
-        })
-      });
-    })
-    .catch(console.log);
+    loadUsers();
   }, []);
 
   return (
