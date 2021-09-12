@@ -21,7 +21,8 @@ import PeopleIcon from '@material-ui/icons/People';
 
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import useUsersActions from '../hooks/useUsersActions';
+import useLocalContextActions from '../hooks/useLocalContextActions';
+// import useUsersActions from '../hooks/useLocalContextActions';
 
 // for navigation bar
 const useStyles = makeStyles((theme) => ({
@@ -128,16 +129,17 @@ const Header = () => {
   // for search *************************
   
   // const { addNewUser, deleteUser } = useUsersActions();
+  const { addNewItem, deleteItem } = useLocalContextActions();
   
   const handleSearchInputChange = (event) => {    
-    // if(event.target.value) {
-    //   addNewUser({
-    //     id: 'search',
-    //     name: event.target.value,
-    //   });
-    // } else {
-    //   deleteUser('search');
-    // }
+    if(event.target.value) {
+      addNewItem({
+        id: 'search',
+        name: event.target.value,
+      });
+    } else {
+      deleteItem('search');
+    }
   }
   // ************************************
 

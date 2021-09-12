@@ -12,7 +12,7 @@ import Header from './components/Header'
 
 import PrivateRoute from './hocs/PrivateRoute'
 
-import { UsersProvider } from './context/UsersContext';
+import { LocalContextProvider } from './context/LocalContext';
 import { AdminsProvider } from './context/AdminsContext';
 
 const App = () => {
@@ -27,7 +27,7 @@ const App = () => {
 
   return (
     <AdminsProvider>
-      <UsersProvider>
+      <LocalContextProvider>
       <Header />
       <Switch>
           <PrivateRoute exact path='/'>
@@ -44,7 +44,7 @@ const App = () => {
           </PrivateRoute>
           <Route path='/login' component={Login} />
         </Switch>
-      </UsersProvider>
+      </LocalContextProvider>
     </AdminsProvider>
   );
 }

@@ -15,8 +15,9 @@ import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
+import useLocalContextActions from '../hooks/useLocalContextActions';
 
-import useUsersActions from '../hooks/useUsersActions';
+// import useUsersActions from '../hooks/useLocalContextActions';
 
 
 const styles = theme => ({
@@ -71,6 +72,7 @@ const Users = (props) => {
   }
 
   // const {users, deleteUser, addNewUser} = useUsersActions();
+  const { items } = useLocalContextActions();
   const [users, setUsers] = useState({});
 
   const [sortingBy, setSortingBy] = useState(sortByFirstNameUp);
@@ -138,15 +140,15 @@ const Users = (props) => {
   } 
 
   React.useEffect(()=>{
-    if(users.search) {
+    if(items.search) {
       setArrayUsers(Object.values(users).filter(user => (
         user.firstname 
-          ? user.firstname.toLowerCase().includes(users.search.name.toLowerCase()) || 
-            user.lastname.toLowerCase().includes(users.search.name.toLowerCase())
+          ? user.firstname.toLowerCase().includes(items.search.name.toLowerCase()) || 
+            user.lastname.toLowerCase().includes(items.search.name.toLowerCase())
           : false)));
     } else setArrayUsers(Object.values(users));
-    console.log(users);
-  }, [users]);
+    console.log(items);
+  }, [items, users]);
 
   // React.useEffect(() => {
   //   fetch('https://users-list-server.herokuapp.com/users')
