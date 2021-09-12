@@ -145,16 +145,24 @@ const Users = (props) => {
   }, [sortingBy, arrayUsers]);
 
   const handleDeleteButtonClick = (event) => {
-    // deleteUser(event.currentTarget.value);
-    console.log(event.currentTarget.value);
+
+    const usersId = event.currentTarget.value;
+
     fetch(`${SERVER_PATH}/users/delete`, {
       method: 'delete',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({id: event.currentTarget.value})
+      body: JSON.stringify({id: usersId})
     })
     .then((res) => res.json())
     .then(data => {
-      if(data === 'success') return loadUsers();
+      if(data === 'success') {
+        // if the user was successfully delete from database, delete him from the list
+        setUsers((prevState) => {
+          const users = {...prevState}
+          delete users[usersId];
+          return users;
+        })
+      }
       else console.log(data);
     })
     .catch(console.log);
