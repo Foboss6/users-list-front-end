@@ -1,24 +1,42 @@
-import logo from './logo.svg';
+import { Switch, Route } from 'react-router-dom';
+
 import './App.css';
 
-function App() {
+import Home from './components/Home.js'
+import Users from './components/Users.js';
+import Create from './components/Create.js';
+import Edit from './components/Edit.js';
+import Login from './components/Login'
+import Header from './components/Header'
+
+import PrivateRoute from './hocs/PrivateRoute'
+
+import { UsersProvider } from './context/UsersContext';
+import { AdminsProvider } from './context/AdminsContext';
+
+const App = () => {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AdminsProvider>
+      <UsersProvider>
+      <Header />
+      <Switch>
+          <PrivateRoute exact path='/'>
+            <Home />
+          </PrivateRoute>
+          <PrivateRoute exact path='/users'>
+            <Users />
+          </PrivateRoute>
+          <PrivateRoute exact path='/users/create'>
+            <Create />
+          </PrivateRoute>
+          <PrivateRoute exact path='/users/:id'>
+            <Edit />
+          </PrivateRoute>
+          <Route path='/login' component={Login} />
+        </Switch>
+      </UsersProvider>
+    </AdminsProvider>
   );
 }
 
