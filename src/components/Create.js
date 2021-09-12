@@ -26,7 +26,7 @@ export default function Create() {
     inputs.forEach((input) => {input.value = '';})
   }
 
-  const {addNewUser} = useUsersActions();
+  // const {addNewUser} = useUsersActions();
 
   const [isDataValid, setDataValid] = useState(true);
   
@@ -39,10 +39,10 @@ export default function Create() {
 
   const handleButtonClick = () => {
     if(user && user.firstname && user.lastname && user.position) {
-      addNewUser({
-        id: Date.now(),
-        ...user,
-      });
+      // addNewUser({
+      //   id: Date.now(),
+      //   ...user,
+      // });
   
       clearInputs('');
 

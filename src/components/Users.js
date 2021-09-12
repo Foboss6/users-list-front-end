@@ -70,8 +70,8 @@ const Users = (props) => {
         obj[key] = 'default';
   }
 
-  const {users, deleteUser, addNewUser} = useUsersActions();
-  // const [users, setUsers] = useState();
+  // const {users, deleteUser, addNewUser} = useUsersActions();
+  const [users, setUsers] = useState({});
 
   const [sortingBy, setSortingBy] = useState(sortByFirstNameUp);
 
@@ -148,12 +148,28 @@ const Users = (props) => {
     console.log(users);
   }, [users]);
 
+  // React.useEffect(() => {
+  //   fetch('https://users-list-server.herokuapp.com/users')
+  //   .then(res => res.json())
+  //   .then(data => {
+  //     data.forEach((el) => {
+  //       addNewUser(el);
+  //     });
+  //   })
+  //   .catch(console.log);
+  // }, []);
+
   React.useEffect(() => {
     fetch('https://users-list-server.herokuapp.com/users')
     .then(res => res.json())
     .then(data => {
       data.forEach((el) => {
-        addNewUser(el);
+        setUsers((prevState) => {
+          return {
+            ...prevState,
+            [el.id]: el,
+          }
+        })
       });
     })
     .catch(console.log);

@@ -11,35 +11,35 @@ const Edit = () => {
   const history = useHistory();
   const location = useLocation();
   
-  const {users, deleteUser, addNewUser} = useUsersActions();
+  // const {users, deleteUser, addNewUser} = useUsersActions();
 
   //take user ID from pathname
   const splittedPathname = location.pathname.split('/');
   const userToEditId = splittedPathname[splittedPathname.length - 1];
 
-  const [user, setUser] = React.useState(users[userToEditId]);
+  // const [user, setUser] = React.useState(users[userToEditId]);
 
   const onInputChange = (event, fieldName) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [fieldName]: event.target.value
-    }));
+    // setUser((prevUser) => ({
+    //   ...prevUser,
+    //   [fieldName]: event.target.value
+    // }));
   }
 
   const handleButtonClick = () => {
-    deleteUser(user.id);
+    // deleteUser(user.id);
     
-    addNewUser({
-      id: user,
-      ...user,
-    });
+    // addNewUser({
+    //   id: user,
+    //   ...user,
+    // });
 
     history.push('/users');
   }
   
   return(
     <div>
-      <h3>Edit {user.firstname}'s data</h3>
+      {/* <h3>Edit {user.firstname}'s data</h3>
       <TextField
           id="outlined-helperText-firstname"
           label="First Name"
@@ -61,7 +61,7 @@ const Edit = () => {
           variant="outlined"
           onChange={(ev) => onInputChange(ev, 'position')}
         />
-        <Button style={{height: '55px'}} variant="contained" onClick={handleButtonClick}>Save</Button>
+        <Button style={{height: '55px'}} variant="contained" onClick={handleButtonClick}>Save</Button> */}
     </div>
   )
 }

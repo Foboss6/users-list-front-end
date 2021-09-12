@@ -126,17 +126,18 @@ const Header = () => {
   }
   // ************************************
   // for search *************************
-  const { addNewUser, deleteUser } = useUsersActions();
+  
+  // const { addNewUser, deleteUser } = useUsersActions();
   
   const handleSearchInputChange = (event) => {    
-    if(event.target.value) {
-      addNewUser({
-        id: 'search',
-        name: event.target.value,
-      });
-    } else {
-      deleteUser('search');
-    }
+    // if(event.target.value) {
+    //   addNewUser({
+    //     id: 'search',
+    //     name: event.target.value,
+    //   });
+    // } else {
+    //   deleteUser('search');
+    // }
   }
   // ************************************
 

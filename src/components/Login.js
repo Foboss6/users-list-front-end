@@ -138,7 +138,7 @@ const Login = () => {
   // **********************************************************
 
   // ******** For REGISTER tab ***********************************
-  const { addNewUser } = useUsersActions();
+  // const { addNewUser } = useUsersActions();
   const [user, setUser] = useState({
     firstname: '',
     lastname: '',
@@ -213,10 +213,10 @@ const Login = () => {
                     helperTextPosition: '',
                   }));
       
-                  addNewUser({
-                    id: registerId,
-                    ...user,
-                  });
+                  // addNewUser({
+                  //   id: registerId,
+                  //   ...user,
+                  // });
 
                   addNewAdmin({
                     id: registerId,
