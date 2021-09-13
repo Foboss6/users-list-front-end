@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+
+import { SERVER_PATH } from '../variables/variables.js';
 
 import Button from '@material-ui/core/Button';
 
 import InputForm from './InputForm.js';
-import useLocalContextActions from '../hooks/useLocalContextActions'
-import { useHistory } from 'react-router';
 
-
-export default function Create() {
+const Create = () => {
   const history = useHistory();
   
   const [user, setUser] = useState({
@@ -26,8 +26,6 @@ export default function Create() {
     inputs.forEach((input) => {input.value = '';})
   }
 
-  // const {addNewUser} = useUsersActions();
-
   const [isDataValid, setDataValid] = useState(true);
   
   const onInputChange = (event, fieldName) => {
@@ -39,16 +37,25 @@ export default function Create() {
 
   const handleButtonClick = () => {
     if(user && user.firstname && user.lastname && user.position) {
-      // addNewUser({
-      //   id: Date.now(),
-      //   ...user,
-      // });
-  
-      clearInputs('');
-
       setDataValid(true);
 
-      history.push('/users')
+      fetch(`${SERVER_PATH}/users/create`, {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(user)
+      })
+      .then((res) => res.json())
+      .then(data => {
+        if(data.id) {
+          clearInputs('');
+          return history.push('/users');
+        } else {
+          setDataValid(false);
+          return console.log(data);
+        }
+      })
+      .catch(console.log);
+ 
     } else setDataValid(false);
   }
 
@@ -67,3 +74,5 @@ export default function Create() {
     </div>
   )
 }
+
+export default Create;
