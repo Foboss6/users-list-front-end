@@ -4,7 +4,7 @@ import { LocalContext } from "../context/LocalContext";
 const useLocalContextActions = () => {
   const { context, setContext } = useContext(LocalContext);
 
-  const addNewItem = useCallback((newItem) => {
+  const addNewItem = (newItem) => {
     setContext((prevState) => {
       return {
         ...prevState,
@@ -13,21 +13,21 @@ const useLocalContextActions = () => {
           [newItem.id]: newItem,
         }
       }
-    });
-  }, [setContext]);
+    })
+  };
 
-  const deleteItem = useCallback((key) => {
-    setContext((prevState)=>{
-      const items = { ...prevState.items };
+  const deleteItem = (key) => {
+    setContext((prevState) => {
+      const items = {...prevState.items};
 
       delete items[key];
-      
+
       return {
         ...prevState,
         items,
       }
-    });
-  }, [setContext]);
+    })
+  };
   
   return {
     ...context,

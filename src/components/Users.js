@@ -22,7 +22,7 @@ import AddIcon from '@material-ui/icons/Add';
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(),
     overflowX: 'auto',
     backgroundColor: 'transparent',
   },
@@ -71,7 +71,7 @@ const Users = (props) => {
   }
 
   // const {users, deleteUser, addNewUser} = useUsersActions();
-  const { items } = useLocalContextActions();
+  const { items, addNewItem } = useLocalContextActions();
   const [users, setUsers] = useState({});
 
   const [sortingBy, setSortingBy] = useState(sortByFirstNameUp);
@@ -169,6 +169,7 @@ const Users = (props) => {
   }
 
   const handleEditButtonClick = (event) => {
+    addNewItem(users[event.currentTarget.value]);
     history.push(`/users/${event.currentTarget.value}`);
   }
 
@@ -186,17 +187,6 @@ const Users = (props) => {
     } else setArrayUsers(Object.values(users));
     console.log(items);
   }, [items.search, users]);
-
-  // React.useEffect(() => {
-  //   fetch('https://users-list-server.herokuapp.com/users')
-  //   .then(res => res.json())
-  //   .then(data => {
-  //     data.forEach((el) => {
-  //       addNewUser(el);
-  //     });
-  //   })
-  //   .catch(console.log);
-  // }, []);
 
   React.useEffect(() => {
     loadUsers();
