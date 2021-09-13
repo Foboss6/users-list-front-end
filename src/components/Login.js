@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+
+import useAdminsActions from '../hooks/useAdminsActions';
+import useLocalContextActions from '../hooks/useLocalContextActions';
+import { SERVER_PATH } from '../variables/variables';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -8,10 +13,6 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
-import { useHistory } from 'react-router-dom';
-import useAdminsActions from '../hooks/useAdminsActions';
-// import useUsersActions from '../hooks/useLocalContextActions';
 
 const useStyles = makeStyles({
   paperRoot: {
@@ -33,9 +34,8 @@ const Login = () => {
   const history = useHistory();
   
   const { admins, addNewAdmin, deleteAdmin } = useAdminsActions();
-  
-  // LOGOUT automaticaly
-  if(admins.CurrentAdmin) deleteAdmin('CurrentAdmin');
+
+  const { items, addNewItem, deleteItem } = useLocalContextActions();
 
   // ***** For tabs *******************************
   const classes = useStyles();
@@ -46,7 +46,8 @@ const Login = () => {
   };
   // **********************************************
 
-  // ******** For BOTH tabs ************************************
+  // ******** For BOTH tabs ***********************************
+  
   const [helperText, setHelperText] = useState({
     helperTextEmail: '',
     helperTextPass: '',
@@ -114,41 +115,50 @@ const Login = () => {
     }
   }
 
-  const handleEnterButtonClick = () => {
-    if(loginData.email && loginData.pass) {
-      const adminsList = Object.values(admins);
-      const currentAdmin = adminsList.find((admin) => (admin.email === loginData.email && admin.pass === loginData.pass));
-
-      if(currentAdmin) {
-        addNewAdmin({
-          ...currentAdmin,
-          id: 'CurrentAdmin',
-          currentId: currentAdmin.id,
-        });
-
-        history.push('/');
-      } else {
-        setHelperText((prevState) => ({
-          ...prevState,
-          helperTextEmail: 'We don\'t know you!',
-        }));
-      }
-    }
+  const handleLogInButtonClick = () => {
+    if(loginData.loginEmail && loginData.loginPassword) {
+      fetch(`${SERVER_PATH}/login`, {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(loginData)
+      })
+      .then((res) => res.json())
+      .then(data => {
+        console.log(data);
+        if(data.id) {
+          addNewItem({
+            ...data,
+            id: 'CurrentAdmin',
+          })
+          return history.push('/');
+        } else {
+          console.log(data);
+          return (
+            setHelperText((prevState) => ({
+              ...prevState,
+              helperTextEmail: 'Invalid login data',
+              helperTextPass: 'Invalid login data',
+            }))
+          );
+        }
+      })
+      .catch(console.log);
+    } 
   }
   // **********************************************************
 
   // ******** For REGISTER tab ***********************************
   // const { addNewUser } = useUsersActions();
-  const [user, setUser] = useState({
-    firstname: '',
-    lastname: '',
-    position: ''
-  });
-
   const [admin, setAdmin] = useState({
     email: '',
     pass: '',
     passConfirmed: false,
+  });
+  
+  const [user, setUser] = useState({
+    firstname: '',
+    lastname: '',
+    position: ''
   });
 
   const [checkState, setChecState] = useState(true);
@@ -308,6 +318,15 @@ const Login = () => {
   }
   // **********************************************************
 
+  React.useEffect(() => {
+    console.log(items);
+  }, [items.CurrentAdmin]);
+
+  React.useEffect(() => {
+  // LOGOUT automaticaly when entered to LOGIN route
+  if(items.CurrentAdmin) deleteItem('CurrentAdmin');
+  }, []);
+
   return (
     <section style={{textAlign: 'center'}}>
       <div id='tabs-container' style={{margin: '0 auto', display: 'table', width: '40%'}}>
@@ -340,7 +359,7 @@ const Login = () => {
                   variant="outlined"
                   margin='normal'
                   onBlur={(ev) => handleEmailBlur(ev)}
-                  onChange={(ev)=> onInputChange(ev, 'email')}
+                  onChange={(ev)=> onInputChange(ev, 'loginEmail')}
                 />
               </div>
               <div>
@@ -355,12 +374,12 @@ const Login = () => {
                   variant="outlined"
                   margin='normal'
                   onBlur={(ev) => handleLoginPassBlur(ev)}
-                  onChange={(ev)=> onInputChange(ev, 'pass')}
+                  onChange={(ev)=> onInputChange(ev, 'loginPassword')}
                 />
               </div>
               <div>
-                <Button className={classes.button} variant="contained" onClick={handleEnterButtonClick}>
-                  Enter
+                <Button className={classes.button} variant="contained" onClick={handleLogInButtonClick}>
+                  LogIn
                 </Button>
               </div>
             </div>

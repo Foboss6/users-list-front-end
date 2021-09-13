@@ -129,7 +129,7 @@ const Header = () => {
   // for search *************************
   
   // const { addNewUser, deleteUser } = useUsersActions();
-  const { addNewItem, deleteItem } = useLocalContextActions();
+  const { items, addNewItem, deleteItem } = useLocalContextActions();
   
   const handleSearchInputChange = (event) => {    
     if(event.target.value) {
@@ -151,7 +151,7 @@ const Header = () => {
   const { admins } = useAdminsActions();
 
   // NEEDs to remake for taking data from Context
-  const [login, setLogin] = useState((localStorage.getItem('isLoggedIn') === 'true') ? 'logout' : 'login');
+  const [login, setLogin] = useState(items.CurrentAdmin ? 'logout' : 'login');
 
   const [pathname, setPathname] = useState();
 
@@ -162,8 +162,8 @@ const Header = () => {
   }
 
   useEffect(() => {
-    setLogin(() => (admins.CurrentAdmin ? 'logout' : 'login'));
-  }, [admins]);
+    setLogin(() => (items.CurrentAdmin ? 'logout' : 'login'));
+  }, [items.CurrentAdmin]);
 
   useEffect(() => {
     let localPath;
