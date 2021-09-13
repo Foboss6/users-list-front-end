@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import useAdminsActions from '../hooks/useAdminsActions';
 import useLocalContextActions from '../hooks/useLocalContextActions';
 import { SERVER_PATH } from '../variables/variables';
 
@@ -32,67 +31,30 @@ const useStyles = makeStyles({
 const Login = () => {
   
   const history = useHistory();
-  
-  const { admins, addNewAdmin, deleteAdmin } = useAdminsActions();
 
   const { items, addNewItem, deleteItem } = useLocalContextActions();
 
-  // ***** For tabs *******************************
-  const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [credentials = {}, setCredentials] = useState();
 
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  // **********************************************
-
-  // ******** For BOTH tabs ***********************************
-  
   const [helperText, setHelperText] = useState({
     helperTextEmail: '',
     helperTextPass: '',
     helperTextPassConfirm: '',
   });
 
-  const emailValidation = (email) => (
-    /^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/.test(email)
-    ? true
-    : false
-  );
+  // LOGOUT automaticaly when entered to LOGIN route
+  React.useEffect(() => {
+    if(items.CurrentAdmin) deleteItem('CurrentAdmin');
+    }, []);
 
-  const handleEmailBlur = (event) => {
-    if(event.target.value) {
-      // if email was entered go to its validation
-      if (emailValidation(event.target.value)) {
-        //If email is valid, write it to local context and clear an error
-        setAdmin((prevState) => ({
-          ...prevState,
-          email: event.target.value,
-        }));
-        
-        setHelperText((prevState) => ({
-          ...prevState,
-          helperTextEmail: '',
-        }));
-      } else {
-        // If email is not valid go out with error
-        setHelperText((prevState) => ({
-          ...prevState,
-          helperTextEmail: 'Enter a valid email',
-        }));
-      }
-    } else {
-      // if email wasn't entered go out with error
-      setHelperText((prevState) => ({
-        ...prevState,
-        helperTextEmail: 'Enter an email',
-      }));
-    }
-  }
+  // ***** For tabs *******************************************
+  const classes = useStyles();
+  const [value, setValue] = React.useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
   // ***********************************************************
-
-  // ******** For INPUT tab ************************************
-  const [credentials = {}, setCredentials] = useState();
 
   const onInputChange = (event, fieldName) => {
     setCredentials((prevState) => ({
@@ -101,30 +63,21 @@ const Login = () => {
     }));
   }
 
+  // ******** For INPUT tab ************************************
   const handleLoginPassBlur = (event) => {
-    if(!event.target.value) {
-      setHelperText((prevState) => ({
-        ...prevState,
-        helperTextPass: 'Enter password',
-      }));
-    } else {
-      setHelperText((prevState) => ({
-        ...prevState,
-        helperTextPass: '',
-      }));
-    }
+    if(!event.target.value) setHelper('helperTextPass', 'Enter password');
+    else setHelper('helperTextPass', '');
   }
 
   const handleLogInButtonClick = () => {
-    if(credentials.loginEmail && credentials.loginPassword) {
+    if( checkEmail(credentials.loginEmail) && credentials.loginPassword ) {
       fetch(`${SERVER_PATH}/login`, {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       })
       .then((res) => res.json())
       .then(data => {
-        console.log(data);
         if(data.id) {
           addNewItem({
             ...data,
@@ -148,25 +101,24 @@ const Login = () => {
   // **********************************************************
 
   // ******** For REGISTER tab ***********************************
-  const [registerData, setRegisterData] = useState();
-
   const [checkState, setChecState] = useState(true);
 
-  const handleRegisterButtonClick = () => {
-    if( checkEmail() && checkPassword() && checkUsersData() ) {
-      fetch(`${SERVER_PATH}/login/register`, {
-        method: 'post',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(credentials)
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        if(data.id) {
-          console.log(data);
-        } else console.log(data);
-      })
-    } 
+  const handleCheckChange = () => {
+    checkState
+      ? setChecState(false)
+      : setChecState(true)
   }
+
+  React.useEffect(() => {
+    if( !checkState ) {
+      setCredentials((prevState) => ({
+        ...prevState,
+        firstname: '',
+        lastname: '',
+        position: '',
+      }));
+    }
+  }, [checkState]);
 
   const setHelper = (fieldName, text) => {
     setHelperText((prevState) => ({
@@ -178,14 +130,12 @@ const Login = () => {
     else return true;
   }
 
-  const checkEmail = () => {
-    if( !credentials.email ) {
-      updateCredentials({isEmailChecked: false});
-      return setHelper('helperTextEmail', 'Enter email');}
+  const checkEmail = (email) => {
+    setHelper('helperTextEmail', '');
     
-    if( !(/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/.test(credentials.email)) ) {
-      updateCredentials({isEmailChecked: false});
-      return setHelper('helperTextEmail', 'Enter valid email');}
+    if( !email ) return setHelper('helperTextEmail', 'Enter email');
+    
+    if( !(/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/.test(email)) ) return setHelper('helperTextEmail', 'Enter valid email');
 
     return true;
   }
@@ -210,51 +160,48 @@ const Login = () => {
   }
 
   const checkUsersData = () => {
-    setCredentials((prevState) => ({
+    setHelperText((prevState) => ({
       ...prevState,
       helperTextFN: '',
       helperTextLN: '',
       helperTextPOS: '',
     }));
     
-    if( !credentials.firstname ) {
-      setHelper('helperTextFN', 'Enter First Name');
-      return false;
-    }
-    if( !credentials.lastname ) {
-      setHelper('helperTextLN', 'Enter Last Name');
-      return false;
-    }
-    if( !credentials.position ) {
-      setHelper('helperTextPOS', 'Enter Position');
-      return false;
-    }
+    if( !credentials.firstname ) return setHelper('helperTextFN', 'Enter First Name');
+    if( !credentials.lastname ) return setHelper('helperTextLN', 'Enter Last Name');
+    if( !credentials.position ) return setHelper('helperTextPOS', 'Enter Position');
 
     return true;
   }
 
-  const updateCredentials = (data) => {
-    setCredentials((prevState) => ({
-      ...prevState,
-      data,
-    }));
-  };
-
-  const handleCheckChange = () => {
-    checkState
-      ? setChecState(false)
-      : setChecState(true)
+  const handleRegisterButtonClick = () => {   
+    if( 
+      checkState 
+      ? checkEmail(credentials.email) && checkPassword() && checkUsersData() 
+      : checkEmail(credentials.email) && checkPassword()
+    ) {
+      fetch(`${SERVER_PATH}/login/register`, {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(credentials)
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data.id) {
+          addNewItem({
+            ...data,
+            id: 'CurrentAdmin',
+          });
+          return history.push('/');
+        } else {
+          if(data.includes('exists')) return setHelper('helperTextEmail', 'This email is already occupied');
+          else console.log(data);
+        }
+      })
+      .catch(console.log);
+    } 
   }
   // **********************************************************
-
-  React.useEffect(() => {
-    console.log(items);
-  }, [items.CurrentAdmin]);
-
-  React.useEffect(() => {
-  // LOGOUT automaticaly when entered to LOGIN route
-  if(items.CurrentAdmin) deleteItem('CurrentAdmin');
-  }, []);
 
   return (
     <section style={{textAlign: 'center'}}>
@@ -287,7 +234,7 @@ const Login = () => {
                   type="email"
                   variant="outlined"
                   margin='normal'
-                  onBlur={(ev) => handleEmailBlur(ev)}
+                  onBlur={() => checkEmail(credentials.loginEmail)}
                   onChange={(ev)=> onInputChange(ev, 'loginEmail')}
                 />
               </div>
@@ -321,41 +268,50 @@ const Login = () => {
             ?
             <div>
               <div>
-              <TextField
-                required
-                error={!!helperText.helperTextEmail}
-                helperText={helperText.helperTextEmail}
-                id="outlined-required-email"
-                label="Email"
-                variant="outlined"
-                margin='normal'
-                onBlur={checkEmail}
-                onChange={(ev)=> onInputChange(ev, 'email')}
-              />
-              <TextField
-                id="outlined-password-input-pass"
-                label="Password"
-                type="password"
-                autoComplete="new-password"
-                variant="outlined"
-                margin='normal'
-                error={!!helperText.helperTextPass}
-                helperText={helperText.helperTextPass}
-                onBlur={checkPassword}
-                onChange={(ev)=> onInputChange(ev, 'password')}
-              />
-              <TextField
-                id="outlined-password-input-pass-confirm"
-                label="Confirm password"
-                type="password"
-                autoComplete="new-password"
-                variant="outlined"
-                margin='normal'
-                error={!!helperText.helperTextPassConfirm}
-                helperText={helperText.helperTextPassConfirm}
-                onBlur={checkPassword}
-                onChange={(ev)=> onInputChange(ev, 'passwordConfirm')}
-              />
+                <div>
+                  <TextField
+                    required
+                    className={classes.input}
+                    error={!!helperText.helperTextEmail}
+                    helperText={helperText.helperTextEmail}
+                    id="outlined-required-email"
+                    label="Email"
+                    variant="outlined"
+                    margin='normal'
+                    onBlur={() => checkEmail(credentials.email)}
+                    onChange={(ev)=> onInputChange(ev, 'email')}
+                  />
+                </div>
+                <div>
+                  <TextField
+                    className={classes.input}
+                    id="outlined-password-input-pass"
+                    label="Password"
+                    type="password"
+                    autoComplete="new-password"
+                    variant="outlined"
+                    margin='normal'
+                    error={!!helperText.helperTextPass}
+                    helperText={helperText.helperTextPass}
+                    onBlur={checkPassword}
+                    onChange={(ev)=> onInputChange(ev, 'password')}
+                  />
+                </div>
+                <div>
+                  <TextField
+                    className={classes.input}
+                    id="outlined-password-input-pass-confirm"
+                    label="Confirm password"
+                    type="password"
+                    autoComplete="new-password"
+                    variant="outlined"
+                    margin='normal'
+                    error={!!helperText.helperTextPassConfirm}
+                    helperText={helperText.helperTextPassConfirm}
+                    onBlur={checkPassword}
+                    onChange={(ev)=> onInputChange(ev, 'passwordConfirm')}
+                  />
+                </div>
               </div>
               <div>
                 <FormControlLabel
@@ -369,34 +325,51 @@ const Login = () => {
                   }
                   label="Add me to the users list"
                 />
-                </div>
-                <div style={{visibility: checkState ? 'visible' : 'hidden'}}>
-                <TextField
-                    id="outlined-required-first-name"
-                    label="First Name"
-                    variant="outlined"
-                    margin='normal'
-                    onChange={(ev)=> onInputChange(ev, 'firstname')}
-                  />
-                <TextField
-                    id="outlined-required-last-name"
-                    label="Last Name"
-                    variant="outlined"
-                    margin='normal'
-                    error={!!helperText.helperTextLastName}
-                    helperText={helperText.helperTextLastName}
-                    onChange={(ev)=> onInputChange(ev, 'lastname')}
-                  />
-                  <TextField
-                    id="outlined-required-position"
-                    label="Position"
-                    variant="outlined"
-                    margin='normal'
-                    error={!!helperText.helperTextPosition}
-                    helperText={helperText.helperTextPosition}
-                    onChange={(ev)=> onInputChange(ev, 'position')}
-                  />
               </div>
+              {
+                checkState
+                ?
+                <div>
+                  <div>
+                    <TextField
+                      className={classes.input}
+                      id="outlined-required-first-name"
+                      label="First Name"
+                      variant="outlined"
+                      margin='normal'
+                      error={!!helperText.helperTextFN}
+                      helperText={helperText.helperTextFN}
+                      onChange={(ev)=> onInputChange(ev, 'firstname')}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      className={classes.input}
+                      id="outlined-required-last-name"
+                      label="Last Name"
+                      variant="outlined"
+                      margin='normal'
+                      error={!!helperText.helperTextLN}
+                      helperText={helperText.helperTextLN}
+                      onChange={(ev)=> onInputChange(ev, 'lastname')}
+                    />
+                  </div>
+                  <div>
+                    <TextField
+                      className={classes.input}
+                      id="outlined-required-position"
+                      label="Position"
+                      variant="outlined"
+                      margin='normal'
+                      error={!!helperText.helperTextPOS}
+                      helperText={helperText.helperTextPOS}
+                      onChange={(ev)=> onInputChange(ev, 'position')}
+                    />
+                  </div>
+                </div>
+                :
+                <></>
+              }
               <div>
                 <Button className={classes.button} variant='contained' onClick={handleRegisterButtonClick}>Register</Button>
               </div>

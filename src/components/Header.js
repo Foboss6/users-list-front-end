@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router';
 
-import useAdminsActions from '../hooks/useAdminsActions';
+import useLocalContextActions from '../hooks/useLocalContextActions';
 
 import { makeStyles, withStyles, alpha } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -21,8 +21,6 @@ import PeopleIcon from '@material-ui/icons/People';
 
 import SearchIcon from '@material-ui/icons/Search';
 import InputBase from '@material-ui/core/InputBase';
-import useLocalContextActions from '../hooks/useLocalContextActions';
-// import useUsersActions from '../hooks/useLocalContextActions';
 
 // for navigation bar
 const useStyles = makeStyles((theme) => ({
@@ -147,8 +145,6 @@ const Header = () => {
 
   const history = useHistory();
   const location = useLocation();
-
-  const { admins } = useAdminsActions();
 
   // NEEDs to remake for taking data from Context
   const [login, setLogin] = useState(items.CurrentAdmin ? 'logout' : 'login');

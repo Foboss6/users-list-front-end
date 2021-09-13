@@ -1,6 +1,5 @@
 import React from 'react';
 import { Redirect, Route} from 'react-router-dom';
-import useAdminsActions from '../hooks/useAdminsActions';
 import useLocalContextActions from '../hooks/useLocalContextActions';
 
 const PrivateRoute = ({ children, ...props }) => {

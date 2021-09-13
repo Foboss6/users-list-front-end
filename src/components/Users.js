@@ -185,7 +185,6 @@ const Users = (props) => {
             user.lastname.toLowerCase().includes(items.search.name.toLowerCase())
           : false)));
     } else setArrayUsers(Object.values(users));
-    console.log(items);
   }, [items.search, users]);
 
   React.useEffect(() => {
