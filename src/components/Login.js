@@ -92,10 +92,10 @@ const Login = () => {
   // ***********************************************************
 
   // ******** For INPUT tab ************************************
-  const [loginData = {}, setLoginData] = useState();
+  const [credentials = {}, setCredentials] = useState();
 
   const onInputChange = (event, fieldName) => {
-    setLoginData((prevState) => ({
+    setCredentials((prevState) => ({
       ...prevState,
       [fieldName]: event.target.value
     }));
@@ -116,11 +116,11 @@ const Login = () => {
   }
 
   const handleLogInButtonClick = () => {
-    if(loginData.loginEmail && loginData.loginPassword) {
+    if(credentials.loginEmail && credentials.loginPassword) {
       fetch(`${SERVER_PATH}/login`, {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(loginData)
+        body: JSON.stringify(credentials)
       })
       .then((res) => res.json())
       .then(data => {
@@ -148,168 +148,97 @@ const Login = () => {
   // **********************************************************
 
   // ******** For REGISTER tab ***********************************
-  // const { addNewUser } = useUsersActions();
-  const [admin, setAdmin] = useState({
-    email: '',
-    pass: '',
-    passConfirmed: false,
-  });
-  
-  const [user, setUser] = useState({
-    firstname: '',
-    lastname: '',
-    position: ''
-  });
+  const [registerData, setRegisterData] = useState();
 
   const [checkState, setChecState] = useState(true);
-  
-  const registerId = Date.now();
-
-  const onUserInputChange = (event, fieldName) => {
-    setUser((prevState) => ({
-      ...prevState,
-      [fieldName]: event.target.value,
-    }));
-  }
-
-  const onAdminInputChange = (event, fieldName) => {
-    setAdmin((prevState) => ({
-      ...prevState,
-      [fieldName]: event.target.value,
-    }));
-    
-    if(fieldName === 'pass') {
-      setHelperText((prevState) => ({
-        ...prevState,
-        helperTextPass: '',
-      }));
-    }
-  }
 
   const handleRegisterButtonClick = () => {
-
-    // save admin's data to context
-    if( !admin.email ) {
-      setHelperText((prevState) => ({
-        ...prevState,
-        helperTextEmail: 'Enter email',
-      }));
-    } else {
-      if( !admin.pass ) {
-        setHelperText((prevState) => ({
-          ...prevState,
-          helperTextPass: 'Enter password',
-        }));
-      } else {
-        setHelperText((prevState) => ({
-          ...prevState,
-          helperTextPass: '',
-        }));
-
-        if(!admin.passConfirmed) {
-          setHelperText((prevState) => ({
-            ...prevState,
-            helperTextPassConfirm: 'Enter confirm password',
-          }));
-        } else {
-          if(checkState) {
-            // save user's data to it's oun context to display it in the users list
-            if(user.firstname) {
-              if(user.lastname) {
-                if(user.position) {
-                  setHelperText((prevState) => ({
-                    ...prevState,
-                    helperTextLastName: '',
-                    helperTextPosition: '',
-                  }));
-      
-                  // addNewUser({
-                  //   id: registerId,
-                  //   ...user,
-                  // });
-
-                  addNewAdmin({
-                    id: registerId,
-                    email: admin.email,
-                    pass: admin.pass,
-                  });
-                  // add CurrentAdmin to context
-                  addNewAdmin({
-                    id: 'CurrentAdmin',
-                    email: admin.email,
-                    pass: admin.pass,
-                    currentId: registerId,
-                  });
-
-                  history.push('/');
-                } else {
-                  setHelperText((prevState) => ({
-                    ...prevState,
-                    helperTextPosition: 'Enter your Position',
-                  }));
-                }
-              } else {
-                setHelperText((prevState) => ({
-                  ...prevState,
-                  helperTextLastName: 'Enter your Last Name',
-                }));
-              }
-            }
-          } else {
-            addNewAdmin({
-              id: registerId,
-              email: admin.email,
-              pass: admin.pass,
-            });
-
-            history.push('/');
-          }
-        }
-      }
+    if( checkEmail() && checkPassword() && checkUsersData() ) {
+      fetch(`${SERVER_PATH}/login/register`, {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(credentials)
+      })
+      .then((res) => res.json())
+      .then((data) => {
+        if(data.id) {
+          console.log(data);
+        } else console.log(data);
+      })
     } 
   }
 
-  const checkPasswordConfirm = (event) => {
+  const setHelper = (fieldName, text) => {
+    setHelperText((prevState) => ({
+      ...prevState,
+      [fieldName]: text,
+    }));
+    
+    if(text) return false;
+    else return true;
+  }
 
-    if(admin.pass) { // If password field is not empty, go on
-      if(event.target.value) { // if confirm pass field is not empty, go on
-        // when bouth password are not empty, go on and check are they the same
-        if(admin.pass === event.target.value) {
-          // if bouth passwords are the same, turn off errors, toggle flag about confirm pass
-          setHelperText((prevState) => ({
-            ...prevState,
-            helperTextPass: '',
-            helperTextPassConfirm: '',
-          }));
+  const checkEmail = () => {
+    if( !credentials.email ) {
+      updateCredentials({isEmailChecked: false});
+      return setHelper('helperTextEmail', 'Enter email');}
+    
+    if( !(/^\w+([-]?\w+)*@\w+([-]?\w+)*(\.\w{2,3})+$/.test(credentials.email)) ) {
+      updateCredentials({isEmailChecked: false});
+      return setHelper('helperTextEmail', 'Enter valid email');}
 
-          setAdmin((prevState) => ({
-            ...prevState,
-            passConfirmed: true,
-          }));
-        } else { //if password are not the same, go out with massage
-          setHelperText((prevState) => ({
-          ...prevState,
-          helperTextPassConfirm: 'Passwords are not the same',
-        }));
+    return true;
+  }
 
-        setAdmin((prevState) => ({
-          ...prevState,
-          passConfirmed: false,
-        }));
-        }
-      } else {        // if confirm pass field is empty, go out with message
-        setHelperText((prevState) => ({
-          ...prevState,
-          helperTextPassConfirm: 'Enter confirm password',
-        }));
-      }
-    } else {         // If password field is empty, go out with message
-      setHelperText((prevState) => ({
-          ...prevState,
-          helperTextPass: 'Enter password',
-        }));
+  const checkPassword = () => {
+    setHelper('helperTextPass', '');
+    setHelper('helperTextPassConfirm', '');
+    
+    if( !credentials.password ) return setHelper('helperTextPass', 'Enter password');
+    if( !credentials.passwordConfirm ) return setHelper('helperTextPassConfirm', 'Enter confirm password');
+
+    if( credentials.password.length < 6 ) return setHelper('helperTextPass', 'The password must be more than 6 symbols');
+    if( credentials.passwordConfirm.length < 6 ) return setHelper('helperTextPassConfirm', 'The password must be more than 6 symbols');
+
+    if( credentials.password === credentials.passwordConfirm ) {
+      return true;
+    } else {
+      setHelper('helperTextPass', 'Passwords are not the same');
+      setHelper('helperTextPassConfirm', 'Passwords are not the same');
+      return false;
     }
   }
+
+  const checkUsersData = () => {
+    setCredentials((prevState) => ({
+      ...prevState,
+      helperTextFN: '',
+      helperTextLN: '',
+      helperTextPOS: '',
+    }));
+    
+    if( !credentials.firstname ) {
+      setHelper('helperTextFN', 'Enter First Name');
+      return false;
+    }
+    if( !credentials.lastname ) {
+      setHelper('helperTextLN', 'Enter Last Name');
+      return false;
+    }
+    if( !credentials.position ) {
+      setHelper('helperTextPOS', 'Enter Position');
+      return false;
+    }
+
+    return true;
+  }
+
+  const updateCredentials = (data) => {
+    setCredentials((prevState) => ({
+      ...prevState,
+      data,
+    }));
+  };
 
   const handleCheckChange = () => {
     checkState
@@ -400,7 +329,8 @@ const Login = () => {
                 label="Email"
                 variant="outlined"
                 margin='normal'
-                onBlur={(ev) => handleEmailBlur(ev)}
+                onBlur={checkEmail}
+                onChange={(ev)=> onInputChange(ev, 'email')}
               />
               <TextField
                 id="outlined-password-input-pass"
@@ -411,7 +341,8 @@ const Login = () => {
                 margin='normal'
                 error={!!helperText.helperTextPass}
                 helperText={helperText.helperTextPass}
-                onChange={(ev) => onAdminInputChange(ev, 'pass')}
+                onBlur={checkPassword}
+                onChange={(ev)=> onInputChange(ev, 'password')}
               />
               <TextField
                 id="outlined-password-input-pass-confirm"
@@ -422,7 +353,8 @@ const Login = () => {
                 margin='normal'
                 error={!!helperText.helperTextPassConfirm}
                 helperText={helperText.helperTextPassConfirm}
-                onBlur={(ev) => checkPasswordConfirm(ev)}
+                onBlur={checkPassword}
+                onChange={(ev)=> onInputChange(ev, 'passwordConfirm')}
               />
               </div>
               <div>
@@ -444,7 +376,7 @@ const Login = () => {
                     label="First Name"
                     variant="outlined"
                     margin='normal'
-                    onChange={(ev)=> onUserInputChange(ev, 'firstname')}
+                    onChange={(ev)=> onInputChange(ev, 'firstname')}
                   />
                 <TextField
                     id="outlined-required-last-name"
@@ -453,7 +385,7 @@ const Login = () => {
                     margin='normal'
                     error={!!helperText.helperTextLastName}
                     helperText={helperText.helperTextLastName}
-                    onChange={(ev)=> onUserInputChange(ev, 'lastname')}
+                    onChange={(ev)=> onInputChange(ev, 'lastname')}
                   />
                   <TextField
                     id="outlined-required-position"
@@ -462,7 +394,7 @@ const Login = () => {
                     margin='normal'
                     error={!!helperText.helperTextPosition}
                     helperText={helperText.helperTextPosition}
-                    onChange={(ev)=> onUserInputChange(ev, 'position')}
+                    onChange={(ev)=> onInputChange(ev, 'position')}
                   />
               </div>
               <div>
