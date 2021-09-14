@@ -1,7 +1,7 @@
 {
   "name": "users-list",
   "version": "0.1.0",
-  "homepage": "https://foboss6.github.io/users-list/",
+  "homepage": "https://foboss6.github.io/users-list-front-end/",
   "private": true,
   "engines": {
     "node": "14.x"
