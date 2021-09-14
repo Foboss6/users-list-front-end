@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/users-list-front-end/static/css/main.883b5fbe.chunk.css",
-    "main.js": "/users-list-front-end/static/js/main.b7b5dc4a.chunk.js",
-    "main.js.map": "/users-list-front-end/static/js/main.b7b5dc4a.chunk.js.map",
-    "runtime-main.js": "/users-list-front-end/static/js/runtime-main.fa231976.js",
-    "runtime-main.js.map": "/users-list-front-end/static/js/runtime-main.fa231976.js.map",
-    "static/js/2.6c3ca8ee.chunk.js": "/users-list-front-end/static/js/2.6c3ca8ee.chunk.js",
-    "static/js/2.6c3ca8ee.chunk.js.map": "/users-list-front-end/static/js/2.6c3ca8ee.chunk.js.map",
-    "index.html": "/users-list-front-end/index.html",
-    "static/css/main.883b5fbe.chunk.css.map": "/users-list-front-end/static/css/main.883b5fbe.chunk.css.map",
-    "static/js/2.6c3ca8ee.chunk.js.LICENSE.txt": "/users-list-front-end/static/js/2.6c3ca8ee.chunk.js.LICENSE.txt",
-    "static/media/index.css": "/users-list-front-end/static/media/background.951b21e1.jpg"
+    "main.css": "//foboss6.github.io/users-list-front-end/static/css/main.22978ee9.chunk.css",
+    "main.js": "//foboss6.github.io/users-list-front-end/static/js/main.3dbaabde.chunk.js",
+    "main.js.map": "//foboss6.github.io/users-list-front-end/static/js/main.3dbaabde.chunk.js.map",
+    "runtime-main.js": "//foboss6.github.io/users-list-front-end/static/js/runtime-main.8371818b.js",
+    "runtime-main.js.map": "//foboss6.github.io/users-list-front-end/static/js/runtime-main.8371818b.js.map",
+    "static/js/2.33996408.chunk.js": "//foboss6.github.io/users-list-front-end/static/js/2.33996408.chunk.js",
+    "static/js/2.33996408.chunk.js.map": "//foboss6.github.io/users-list-front-end/static/js/2.33996408.chunk.js.map",
+    "index.html": "//foboss6.github.io/users-list-front-end/index.html",
+    "static/css/main.22978ee9.chunk.css.map": "//foboss6.github.io/users-list-front-end/static/css/main.22978ee9.chunk.css.map",
+    "static/js/2.33996408.chunk.js.LICENSE.txt": "//foboss6.github.io/users-list-front-end/static/js/2.33996408.chunk.js.LICENSE.txt",
+    "static/media/index.css": "//foboss6.github.io/users-list-front-end/static/media/background.951b21e1.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.fa231976.js",
-    "static/js/2.6c3ca8ee.chunk.js",
-    "static/css/main.883b5fbe.chunk.css",
-    "static/js/main.b7b5dc4a.chunk.js"
+    "static/js/runtime-main.8371818b.js",
+    "static/js/2.33996408.chunk.js",
+    "static/css/main.22978ee9.chunk.css",
+    "static/js/main.3dbaabde.chunk.js"
   ]
 }
